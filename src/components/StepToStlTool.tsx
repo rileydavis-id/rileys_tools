@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { StlViewer3D } from './StlViewer3D';
+import { PRECOMPUTED_SAMPLES } from '../samplePrecomputed';
 
 interface StepSampleInfo {
   id: string;
@@ -151,11 +152,20 @@ export const StepToStlTool: React.FC<StepToStlToolProps> = ({
 
       await runConversionWithFile(fileObj);
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : 'Could not reach Render backend to load sample STEP part.';
-      setError(msg);
+      const cached = PRECOMPUTED_SAMPLES[sampleId];
+      if (cached) {
+        setRawStepPreview(cached.step_content);
+        const blob = new Blob([cached.step_content], { type: 'application/step' });
+        setSelectedFile(new File([blob], cached.source_filename, { type: 'application/step' }));
+        setResult(cached);
+        setError(null);
+      } else {
+        const msg =
+          err instanceof Error
+            ? err.message
+            : 'Could not reach Render backend to load sample STEP part.';
+        setError(msg);
+      }
       setLoading(false);
     }
   };

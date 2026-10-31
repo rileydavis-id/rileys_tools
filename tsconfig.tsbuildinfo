@@ -1,1 +1,1 @@
-{"root":["./src/app.tsx","./src/config.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/meshinspectortool.tsx","./src/components/steptostltool.tsx","./src/components/stlviewer3d.tsx"],"version":"5.6.3"}
+{"root":["./src/app.tsx","./src/config.ts","./src/main.tsx","./src/sampleprecomputed.ts","./src/vite-env.d.ts","./src/components/meshinspectortool.tsx","./src/components/steptostltool.tsx","./src/components/stlviewer3d.tsx"],"version":"5.6.3"}
