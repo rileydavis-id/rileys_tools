@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+backend/.venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Build outputs
+dist/
+.vercel/
+
+# Environment & OS
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.log
