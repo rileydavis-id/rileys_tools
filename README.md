@@ -61,6 +61,7 @@ flowchart LR
 
 ```text
 rileys_tools/
+├── AGENTS.md                        # Persistent agent rules for README updates, commits, and deploys
 ├── README.md                        # Full project, architecture, setup, and changelog docs
 ├── package.json                     # Frontend dependencies (React 19, Three.js, Lucide, Vite)
 ├── tsconfig.json                    # TypeScript configuration
@@ -269,3 +270,5 @@ npm run dev
 | `f0adccc` | **Document full setup, CLI tooling, architecture, and tool extension guide in `README.md`** — Added architecture diagram, provisioning commands, and developer guide. |
 | `3a70eb3` | **Add clean Home page, Tools directory page, and dedicated tool subpages** — Added History API routing (`/`, `/tools`, `/tools/step-to-stl`, `/tools/mesh-inspector`) and SPA rewrite rules in `vercel.json`. |
 | `8ab31c6` | **Redesign Home page as Riley Davis Software Engineering Portfolio + Live Tool Lab** — Added personal engineer hero, interactive terminal card (`riley@engineering-lab:~`), 4-column Technical Focus & Stack bento grid, Featured Engineering Projects showcase, and global portfolio footer. |
+| `304e2f2` | **Update README with Software Engineering Portfolio sitemap and commit changelog** — Documented multi-page routes, portfolio sections, and added the commit changelog table. |
+| `latest` | **Add `AGENTS.md` workspace and project rules** — Persisted mandatory `README.md` changelog synchronization, multi-line GitHub commit notes, and Vercel/Render monorepo deployment invariants. |
