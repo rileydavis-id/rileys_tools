@@ -7,8 +7,10 @@ import {
   CheckCircle2,
   Code2,
   Cpu,
+  Database,
   ExternalLink,
   FolderGit2,
+  Globe,
   Home,
   Layers,
   PlusCircle,
@@ -118,14 +120,15 @@ export const App: React.FC = () => {
 
   return (
     <div className="app-shell">
-      {/* Clean Top Navigation Bar */}
+      {/* Top Global Navigation Bar */}
       <header className="top-navbar">
         <div className="brand-cluster" onClick={() => navigate('home')}>
-          <div className="brand-logo">
-            <Wrench size={17} />
-          </div>
-          <div className="brand-title">
-            RILEY DAVIS <span className="brand-domain mono">rileydavis.vercel.app</span>
+          <div className="brand-logo mono">RD</div>
+          <div>
+            <div className="brand-title">
+              Riley Davis <span className="brand-domain mono">rileydavis.vercel.app</span>
+            </div>
+            <div className="brand-subtitle">Software Engineering Portfolio &amp; Live Tool Lab</div>
           </div>
         </div>
 
@@ -136,7 +139,7 @@ export const App: React.FC = () => {
             onClick={() => navigate('home')}
           >
             <Home size={15} />
-            <span>Home</span>
+            <span>Portfolio Home</span>
           </button>
 
           <button
@@ -144,9 +147,9 @@ export const App: React.FC = () => {
             className={`nav-tab ${view === 'tools' ? 'active' : ''}`}
             onClick={() => navigate('tools')}
           >
-            <Server size={15} />
-            <span>Tools</span>
-            <span className="nav-badge">{tools.length}</span>
+            <Wrench size={15} />
+            <span>Interactive Tools</span>
+            <span className="nav-badge">{activeToolsCount} Live</span>
           </button>
 
           {(view === 'step-to-stl' || view === 'mesh-inspector') && (
@@ -164,10 +167,20 @@ export const App: React.FC = () => {
             <span className={`status-dot ${backendStatus === 'online' ? 'online' : 'waking'}`} />
             <span className="mono">
               {backendStatus === 'online'
-                ? `Render API Online (${backendLatencyMs}ms)`
+                ? `Render API (${backendLatencyMs}ms)`
                 : 'Render API Waking...'}
             </span>
           </div>
+          <a
+            href="https://github.com/rileydavis-id/rileys_tools"
+            target="_blank"
+            rel="noreferrer"
+            className="api-docs-link mono"
+            title="GitHub Repository"
+          >
+            <FolderGit2 size={13} />
+            <span>GitHub</span>
+          </a>
           <a
             href={`${backendUrl}/docs`}
             target="_blank"
@@ -183,122 +196,305 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="main-container">
-        {/* 1. HOME VIEW (/) */}
+        {/* 1. PORTFOLIO HOME VIEW (/) */}
         {view === 'home' && (
           <div className="home-view">
-            <section className="home-hero">
-              <div className="home-hero-badge mono">
-                <Sparkles size={13} className="text-cyan" />
-                <span>RILEY DAVIS · ENGINEERING &amp; PYTHON TOOL SUITE</span>
+            {/* Personal Engineer Hero Section */}
+            <section className="portfolio-hero">
+              <div className="portfolio-hero-content">
+                <div className="availability-pill mono">
+                  <span className="status-dot online" />
+                  <span>RILEY DAVIS · SOFTWARE &amp; SYSTEMS ENGINEER</span>
+                </div>
+
+                <h1 className="portfolio-hero-title">
+                  Building full-stack systems,{' '}
+                  <span className="text-gradient">3D CAD pipelines</span>, and interactive Python
+                  tools.
+                </h1>
+
+                <p className="portfolio-hero-bio">
+                  Welcome to my personal engineering site and live tooling lab. Rather than just
+                  static project screenshots, this site hosts{' '}
+                  <strong>live, interactive engineering tools</strong> deployed on{' '}
+                  <strong>Vercel</strong> and powered by a unified Python{' '}
+                  <strong>FastAPI + OpenCASCADE</strong> backend on <strong>Render</strong>.
+                </p>
+
+                <div className="home-cta-row portfolio-cta-row">
+                  <button
+                    type="button"
+                    className="btn-hero-primary"
+                    onClick={() => navigate('tools')}
+                  >
+                    <Wrench size={17} />
+                    <span>Explore Interactive Tools ({activeToolsCount} Live)</span>
+                    <ArrowRight size={17} />
+                  </button>
+
+                  <a href="#featured-projects" className="btn-hero-secondary">
+                    <Code2 size={17} />
+                    <span>View Engineering Projects</span>
+                  </a>
+
+                  <a
+                    href="https://github.com/rileydavis-id"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-hero-secondary"
+                  >
+                    <FolderGit2 size={17} />
+                    <span>@rileydavis-id</span>
+                  </a>
+                </div>
               </div>
 
-              <h1 className="home-hero-title">
-                Custom Engineering &amp; Python Tools,{' '}
-                <span className="text-gradient">All in One Place.</span>
-              </h1>
-
-              <p className="home-hero-subtitle">
-                A unified web workspace hosted on <strong>Vercel</strong> and powered by a single
-                modular Python FastAPI service on <strong>Render</strong>. Browse the tool catalog
-                to convert CAD models, inspect 3D geometry, and run custom Python utilities right in
-                your browser.
-              </p>
-
-              <div className="home-cta-row">
-                <button
-                  type="button"
-                  className="btn-hero-primary"
-                  onClick={() => navigate('tools')}
-                >
-                  <span>Explore Tools ({activeToolsCount} Live)</span>
-                  <ArrowRight size={18} />
-                </button>
-
-                <a
-                  href="https://github.com/rileydavis-id/rileys_tools"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="btn-hero-secondary"
-                >
-                  <FolderGit2 size={17} />
-                  <span>GitHub Repository</span>
-                </a>
-              </div>
-
-              <div className="home-stats-strip">
-                <div className="home-stat-item">
-                  <span className="home-stat-value mono">{activeToolsCount}</span>
-                  <span className="home-stat-label">Active Python Tools</span>
+              {/* Right Interactive Terminal / Architecture Preview Card */}
+              <div className="hero-terminal-card">
+                <div className="terminal-topbar">
+                  <div className="terminal-dots">
+                    <span className="dot red" />
+                    <span className="dot yellow" />
+                    <span className="dot green" />
+                  </div>
+                  <span className="terminal-title mono">riley@engineering-lab:~</span>
+                  <span className="terminal-badge mono">FastAPI + Three.js</span>
                 </div>
-                <div className="home-stat-divider" />
-                <div className="home-stat-item">
-                  <span className="home-stat-value mono">OpenCASCADE</span>
-                  <span className="home-stat-label">3D CAD B-Rep Kernel</span>
-                </div>
-                <div className="home-stat-divider" />
-                <div className="home-stat-item">
-                  <span className="home-stat-value mono">
-                    {backendStatus === 'online' ? `${backendLatencyMs} ms` : 'Online'}
-                  </span>
-                  <span className="home-stat-label">Render Backend Status</span>
+                <div className="terminal-body mono">
+                  <div className="term-line">
+                    <span className="term-prompt">$</span> curl https://rileys-tools-backend.onrender.com/api/health
+                  </div>
+                  <div className="term-output">
+                    {`{ "status": "healthy", "service": "rileys-tools-backend", "tools": ["step-to-stl", "mesh-inspector"] }`}
+                  </div>
+                  <div className="term-line">
+                    <span className="term-prompt">$</span>stack --list
+                  </div>
+                  <div className="term-kv-grid">
+                    <div>
+                      <span className="term-key">Languages:</span> Python 3.12, TypeScript, SQL, C++
+                    </div>
+                    <div>
+                      <span className="term-key">Backend:</span> FastAPI, OpenCASCADE, Trimesh, NumPy
+                    </div>
+                    <div>
+                      <span className="term-key">Frontend:</span> React 19, Three.js WebGL, Vite
+                    </div>
+                    <div>
+                      <span className="term-key">Cloud Infra:</span> Vercel CDN + Render Web Services
+                    </div>
+                  </div>
+                  <div className="term-action-bar">
+                    <button
+                      type="button"
+                      className="term-launch-btn mono"
+                      onClick={() => navigate('tools')}
+                    >
+                      <span>&gt; cd /tools &amp;&amp; ./launch_interactive_suite.sh</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </section>
 
-            {/* Featured Tool Callout */}
-            <section className="home-featured-section">
-              <div className="featured-banner">
-                <div className="featured-banner-left">
-                  <span className="eyebrow mono">FEATURED TOOL</span>
-                  <h2>STEP to STL Converter &amp; Interactive 3D Visualizer</h2>
+            {/* Section 2: Engineering Focus & Technical Stack */}
+            <section className="portfolio-section">
+              <div className="section-heading-row">
+                <div>
+                  <span className="eyebrow mono">TECHNICAL FOCUS &amp; STACK</span>
+                  <h2>What I Build &amp; Work With</h2>
+                </div>
+              </div>
+
+              <div className="skills-bento-grid">
+                <div className="skill-bento-card">
+                  <div className="skill-icon-wrap">
+                    <Server size={20} />
+                  </div>
+                  <h3>Python Backend &amp; APIs</h3>
                   <p>
-                    Upload ISO-10303-21 (<code>.step</code> / <code>.stp</code>) solid models or
-                    load built-in sample mechanical parts. Tessellate with OpenCASCADE on Render and
-                    verify the mesh with 5 shading modes and real-time Z-axis cross-section slicing.
+                    Designing modular FastAPI services, high-throughput file processing endpoints,
+                    and numerical computing pipelines hosted on Render.
                   </p>
-                  <div className="featured-banner-actions">
+                  <div className="tag-row">
+                    <span className="tag-chip mono">Python 3.12</span>
+                    <span className="tag-chip mono">FastAPI</span>
+                    <span className="tag-chip mono">Uvicorn</span>
+                    <span className="tag-chip mono">NumPy</span>
+                  </div>
+                </div>
+
+                <div className="skill-bento-card">
+                  <div className="skill-icon-wrap">
+                    <Box size={20} />
+                  </div>
+                  <h3>CAD &amp; Computational Geometry</h3>
+                  <p>
+                    Programmatic B-Rep solid modeling, ISO-10303-21 STEP parsing, watertight mesh
+                    tessellation, and 3D printability metrology.
+                  </p>
+                  <div className="tag-row">
+                    <span className="tag-chip mono">OpenCASCADE</span>
+                    <span className="tag-chip mono">Cascadio</span>
+                    <span className="tag-chip mono">Trimesh</span>
+                    <span className="tag-chip mono">STEP / STL</span>
+                  </div>
+                </div>
+
+                <div className="skill-bento-card">
+                  <div className="skill-icon-wrap">
+                    <Globe size={20} />
+                  </div>
+                  <h3>Interactive Web &amp; 3D Graphics</h3>
+                  <p>
+                    Building responsive TypeScript interfaces and hardware-accelerated Three.js
+                    WebGL viewports with custom shaders and clipping planes.
+                  </p>
+                  <div className="tag-row">
+                    <span className="tag-chip mono">TypeScript</span>
+                    <span className="tag-chip mono">React 19</span>
+                    <span className="tag-chip mono">Three.js</span>
+                    <span className="tag-chip mono">WebGL</span>
+                  </div>
+                </div>
+
+                <div className="skill-bento-card">
+                  <div className="skill-icon-wrap">
+                    <Database size={20} />
+                  </div>
+                  <h3>Cloud &amp; CI/CD Automation</h3>
+                  <p>
+                    Zero-downtime Git-driven deployments across Vercel and Render using Blueprint
+                    IaC configs and modular monorepo architectures.
+                  </p>
+                  <div className="tag-row">
+                    <span className="tag-chip mono">Vercel</span>
+                    <span className="tag-chip mono">Render</span>
+                    <span className="tag-chip mono">Git / GitHub</span>
+                    <span className="tag-chip mono">Linux</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Section 3: Featured Engineering Projects & Live Tools */}
+            <section id="featured-projects" className="portfolio-section">
+              <div className="section-heading-row">
+                <div>
+                  <span className="eyebrow mono">FEATURED ENGINEERING PROJECTS</span>
+                  <h2>Featured Systems &amp; Interactive Tools</h2>
+                </div>
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  onClick={() => navigate('tools')}
+                >
+                  <span>Open Full Tools Directory</span>
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+
+              <div className="projects-showcase-grid">
+                {/* Project 1 */}
+                <div className="project-showcase-card featured">
+                  <div className="project-card-header">
+                    <span className="project-type-badge mono">CAD PIPELINE · LIVE TOOL</span>
+                    <span className="status-badge active">Live on Render + Vercel</span>
+                  </div>
+                  <h3>OpenCASCADE STEP-to-STL Converter &amp; 3D WebGL Visualizer</h3>
+                  <p>
+                    Full-stack CAD conversion utility that ingests ISO-10303-21 (<code>.step</code>{' '}
+                    / <code>.stp</code>) B-Rep solid models on a Python FastAPI backend, tessellates
+                    them with OpenCASCADE, normalizes units to millimeter scale, and renders the
+                    resulting mesh in an interactive Three.js viewport with real-time Z-axis
+                    cross-section slicing.
+                  </p>
+                  <div className="tag-row">
+                    <span className="tag-chip mono">Python</span>
+                    <span className="tag-chip mono">FastAPI</span>
+                    <span className="tag-chip mono">OpenCASCADE</span>
+                    <span className="tag-chip mono">Three.js</span>
+                    <span className="tag-chip mono">TypeScript</span>
+                  </div>
+                  <div className="project-card-actions">
                     <button
                       type="button"
                       className="btn-primary"
                       onClick={() => navigate('tools')}
                     >
-                      <span>Go to Tools Section</span>
-                      <ArrowRight size={16} />
+                      <span>Go to Tools Section to Launch</span>
+                      <ArrowRight size={15} />
                     </button>
                     <button
                       type="button"
                       className="btn-secondary"
                       onClick={() => navigate('step-to-stl')}
                     >
-                      <Box size={15} />
-                      <span>Open STEP → STL Converter Directly</span>
+                      <span>Open Subpage Directly</span>
                     </button>
                   </div>
                 </div>
 
-                <div className="featured-highlights-grid">
-                  <div className="highlight-mini-card">
-                    <Box size={18} className="text-cyan" />
-                    <h4>OpenCASCADE B-Rep</h4>
-                    <p>True CAD solid to manifold triangle mesh conversion in millimeters.</p>
+                {/* Project 2 */}
+                <div className="project-showcase-card">
+                  <div className="project-card-header">
+                    <span className="project-type-badge mono">COMPUTATIONAL GEOMETRY</span>
+                    <span className="status-badge active">Live on Render + Vercel</span>
                   </div>
-                  <div className="highlight-mini-card">
-                    <Layers size={18} className="text-cyan" />
-                    <h4>Three.js 3D Inspector</h4>
-                    <p>Orbit, pan, zoom, inspect normals, and slice cross-sections in WebGL.</p>
+                  <h3>3D Mesh Printability Inspector &amp; Metrology Engine</h3>
+                  <p>
+                    Analyzes triangle meshes (<code>.stl</code>, <code>.obj</code>,{' '}
+                    <code>.ply</code>) for manifold watertightness, Euler characteristic, face
+                    normal winding consistency, center of mass, PLA filament weight estimation, and
+                    precision unit scaling (<code>mm</code> ↔ <code>inch</code>).
+                  </p>
+                  <div className="tag-row">
+                    <span className="tag-chip mono">Trimesh</span>
+                    <span className="tag-chip mono">NumPy</span>
+                    <span className="tag-chip mono">WebGL Normals</span>
+                    <span className="tag-chip mono">3D Printing</span>
                   </div>
-                  <div className="highlight-mini-card">
-                    <Server size={18} className="text-cyan" />
-                    <h4>Unified Render Backend</h4>
-                    <p>Single FastAPI service hosting all Python tool routers in one place.</p>
-                  </div>
-                  <div className="highlight-mini-card">
-                    <Terminal size={18} className="text-cyan" />
-                    <h4>Plug &amp; Play Expansion</h4>
-                    <p>Drop a new Python router into backend/app/tools/ and push to main.</p>
+                  <div className="project-card-actions">
+                    <button
+                      type="button"
+                      className="btn-primary"
+                      onClick={() => navigate('tools')}
+                    >
+                      <span>View in Tools Section</span>
+                      <ArrowRight size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => navigate('mesh-inspector')}
+                    >
+                      <span>Open Subpage Directly</span>
+                    </button>
                   </div>
                 </div>
               </div>
+            </section>
+
+            {/* Section 4: Bottom Callout to Tools Section */}
+            <section className="tools-cta-banner">
+              <div>
+                <span className="eyebrow mono">INTERACTIVE TOOLING HUB</span>
+                <h2>Ready to Try the Live Tools?</h2>
+                <p>
+                  Head over to the Tools directory to pick and launch any utility hosted on the
+                  unified Render backend.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn-hero-primary"
+                onClick={() => navigate('tools')}
+              >
+                <Wrench size={17} />
+                <span>Go to Tools Section</span>
+                <ArrowRight size={17} />
+              </button>
             </section>
           </div>
         )}
@@ -313,14 +509,14 @@ export const App: React.FC = () => {
                 onClick={() => navigate('home')}
               >
                 <ArrowLeft size={15} />
-                <span>Back to Home</span>
+                <span>Back to Portfolio Home</span>
               </button>
               <span className="subpage-crumb mono">rileydavis.vercel.app / tools</span>
             </div>
 
             <div className="catalog-hero">
               <div>
-                <span className="eyebrow mono">TOOLS DIRECTORY</span>
+                <span className="eyebrow mono">RILEY&apos;S INTERACTIVE TOOLS DIRECTORY</span>
                 <h1>Select a Tool to Launch</h1>
                 <p>
                   All tools below are hosted on <strong>rileydavis.vercel.app</strong> and powered
@@ -520,6 +716,36 @@ export const App: React.FC = () => {
           </div>
         )}
       </main>
+
+      {/* Global Portfolio Footer */}
+      <footer className="site-footer">
+        <div className="footer-inner">
+          <div className="footer-left">
+            <span className="brand-logo small mono">RD</span>
+            <span>
+              <strong>Riley Davis</strong> · Software Engineering Portfolio &amp; Unified Tool Hub
+            </span>
+          </div>
+          <div className="footer-links mono">
+            <button type="button" className="btn-link" onClick={() => navigate('home')}>
+              Home
+            </button>
+            <button type="button" className="btn-link" onClick={() => navigate('tools')}>
+              Tools ({activeToolsCount})
+            </button>
+            <a
+              href="https://github.com/rileydavis-id/rileys_tools"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+            <a href={`${backendUrl}/docs`} target="_blank" rel="noreferrer">
+              Render API Docs
+            </a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
