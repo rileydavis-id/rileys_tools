@@ -1,6 +1,6 @@
-# Riley's Tools (`rileys_tools`)
+# Riley Davis — Software Engineering Portfolio & Unified Python Tool Hub (`rileys_tools`)
 
-Unified Engineering & Python Tool Hub hosted at **[rileydavis.vercel.app](https://rileydavis.vercel.app)** with a combined modular Python FastAPI backend hosted on **Render** at **[rileys-tools-backend.onrender.com](https://rileys-tools-backend.onrender.com)**.
+Personal Software & Systems Engineering Portfolio and Interactive Tool Lab hosted at **[rileydavis.vercel.app](https://rileydavis.vercel.app)**, backed by a unified modular Python FastAPI service on **Render** at **[rileys-tools-backend.onrender.com](https://rileys-tools-backend.onrender.com)**.
 
 ---
 
@@ -8,8 +8,11 @@ Unified Engineering & Python Tool Hub hosted at **[rileydavis.vercel.app](https:
 
 | Resource | URL |
 | :--- | :--- |
-| **Production Website (Vercel)** | [https://rileydavis.vercel.app](https://rileydavis.vercel.app) |
-| **Unified Python Backend API (Render)** | [https://rileys-tools-backend.onrender.com](https://rileys-tools-backend.onrender.com) |
+| **Portfolio Home (`Vercel`)** | [https://rileydavis.vercel.app/](https://rileydavis.vercel.app/) |
+| **Interactive Tools Directory (`Vercel`)** | [https://rileydavis.vercel.app/tools](https://rileydavis.vercel.app/tools) |
+| **STEP → STL Converter Subpage (`Vercel`)** | [https://rileydavis.vercel.app/tools/step-to-stl](https://rileydavis.vercel.app/tools/step-to-stl) |
+| **3D Mesh Inspector Subpage (`Vercel`)** | [https://rileydavis.vercel.app/tools/mesh-inspector](https://rileydavis.vercel.app/tools/mesh-inspector) |
+| **Unified Python Backend API (`Render`)** | [https://rileys-tools-backend.onrender.com](https://rileys-tools-backend.onrender.com) |
 | **Interactive Swagger / OpenAPI Docs** | [https://rileys-tools-backend.onrender.com/docs](https://rileys-tools-backend.onrender.com/docs) |
 | **Backend Health Check JSON** | [https://rileys-tools-backend.onrender.com/api/health](https://rileys-tools-backend.onrender.com/api/health) |
 | **Registered Tools Catalog JSON** | [https://rileys-tools-backend.onrender.com/api/tools](https://rileys-tools-backend.onrender.com/api/tools) |
@@ -19,18 +22,36 @@ Unified Engineering & Python Tool Hub hosted at **[rileydavis.vercel.app](https:
 
 ---
 
-## Architecture Overview
+## Site Map & Multi-Page Navigation Flow
 
-This monorepo is designed so that **all of Riley's web tools live on one site (`rileydavis.vercel.app`)** and **all Python backend workloads run on one shared Render service (`rileys-tools-backend`)**:
+The frontend implements clean History API path routing (`window.history.pushState` + `popstate`) paired with a Vercel SPA rewrite rule (`vercel.json`) so every route works both via in-app navigation and on direct browser refresh:
+
+1. **Portfolio Home (`/`)**:
+   - **Personal Engineer Hero**: Profile badge, engineering bio, quick navigation buttons (**Explore Interactive Tools**, **View Engineering Projects**, **@rileydavis-id**), and an interactive terminal preview card (`riley@engineering-lab:~`).
+   - **Technical Focus & Stack Bento Grid**: 4-column overview across *Python Backend & APIs*, *CAD & Computational Geometry*, *Interactive Web & 3D Graphics*, and *Cloud & CI/CD Automation*.
+   - **Featured Engineering Projects**: Detailed project cards for the *OpenCASCADE STEP-to-STL Converter* and *3D Mesh Printability Inspector*, with buttons to navigate to the `/tools` hub or open each tool's subpage directly.
+   - **Interactive Tooling Hub Callout & Global Footer**.
+2. **Interactive Tools Directory (`/tools`)**:
+   - Searchable and filterable catalog of all Python tools registered on the shared Render backend.
+   - Each active tool card displays its category, status badge, REST API endpoints, and an **Open Tool →** button that routes to its dedicated subpage.
+   - Includes a live Render Backend Endpoint configuration bar and instructions for adding new tools.
+3. **Tool Subpages (`/tools/step-to-stl` & `/tools/mesh-inspector`)**:
+   - Dedicated full-screen tool workspaces with a **← Back to Tools** breadcrumb bar and API route indicator.
+
+---
+
+## System Architecture
+
+All frontend pages live on **Vercel (`rileydavis.vercel.app`)** and all Python backend workloads run on a single shared **Render Web Service (`rileys-tools-backend`)**:
 
 ```mermaid
 flowchart LR
     subgraph GitHub["GitHub Monorepo (rileydavis-id/rileys_tools)"]
-        FE_SRC["Root Frontend (/src)\nVite + React 19 + Three.js"]
+        FE_SRC["Root Frontend (/src)\nPortfolio + Tools Hub + Three.js"]
         BE_SRC["Python Backend (/backend)\nFastAPI + OpenCASCADE + Trimesh"]
     end
 
-    FE_SRC -->|Auto-Deploy on git push| Vercel["Vercel Production\nhttps://rileydavis.vercel.app"]
+    FE_SRC -->|Auto-Deploy on git push| Vercel["Vercel Production\nhttps://rileydavis.vercel.app\nRoutes: /, /tools, /tools/*"]
     BE_SRC -->|Auto-Deploy on git push\nrootDir: backend| Render["Render Web Service\nhttps://rileys-tools-backend.onrender.com"]
 
     Vercel <-->|REST / Multipart FormData\nVITE_BACKEND_URL| Render
@@ -40,20 +61,20 @@ flowchart LR
 
 ```text
 rileys_tools/
-├── README.md                        # Full project, architecture, and setup documentation
+├── README.md                        # Full project, architecture, setup, and changelog docs
 ├── package.json                     # Frontend dependencies (React 19, Three.js, Lucide, Vite)
 ├── tsconfig.json                    # TypeScript configuration
 ├── vite.config.ts                   # Vite bundler config
-├── vercel.json                      # Vercel build configuration (Vite SPA)
+├── vercel.json                      # Vercel build config + SPA rewrites for /tools & /tools/*
 ├── .vercelignore                    # Excludes /backend from Vercel frontend builds
 ├── render.yaml                      # Render Blueprint IaC definition for rileys-tools-backend
-├── index.html                       # Root HTML entry point
+├── index.html                       # Root HTML entry point + SVG favicon
 ├── src/                             # Frontend application (deployed to rileydavis.vercel.app)
 │   ├── main.tsx                     # React DOM root
-│   ├── App.tsx                      # Tool switcher, catalog search, and live Render API monitor
+│   ├── App.tsx                      # Portfolio Home (/), Tools Directory (/tools), and subpage router
 │   ├── config.ts                    # Backend URL resolution & fallback tool catalog metadata
 │   ├── samplePrecomputed.ts         # Precomputed OpenCASCADE STL cache for instant cold-start load
-│   ├── styles.css                   # Dark CAD studio UI theme
+│   ├── styles.css                   # Portfolio & dark CAD studio UI theme
 │   └── components/
 │       ├── StlViewer3D.tsx          # Three.js WebGL 3D STL viewport (OrbitControls, Z-slicer, 5 shaders)
 │       ├── StepToStlTool.tsx        # STEP -> STL converter UI, deflection controls, raw STEP viewer
@@ -73,7 +94,7 @@ rileys_tools/
 
 ## Active Tools Hosted in This Repo
 
-### 1. STEP to STL Converter & 3D CAD Visualizer (`/api/tools/step-to-stl`)
+### 1. STEP to STL Converter & 3D CAD Visualizer (`/tools/step-to-stl` → `/api/tools/step-to-stl`)
 - **CAD Kernel**: Uses [`cascadio`](https://pypi.org/project/cascadio/) (Cython bindings to the OpenCASCADE C++ B-Rep kernel) and [`trimesh`](https://trimesh.org/) to parse `.step`, `.stp`, `.igs`, and `.iges` solid models and tessellate them into watertight triangle meshes.
 - **Unit Normalization**: `cascadio` exports glTF/GLB in meters per the glTF 2.0 specification; `convert_step_bytes_to_mesh()` scales the resulting mesh by `×1000.0` so exported `.stl` files preserve exact CAD millimeter (`mm`) dimensions for 3D printing and CAM slicers.
 - **Built-in ISO-10303-21 AP214 Sample Generator**: Generates real `MANIFOLD_SOLID_BREP` / `ADVANCED_FACE` / `EDGE_LOOP` STEP files on demand (`CNC Gusseted L-Bracket`, `T-Slot Mill Table Clamp Block`, `Hexagonal Drive Coupler`) so users can test end-to-end conversion and inspect the raw STEP source without needing a local CAD file.
@@ -82,7 +103,7 @@ rileys_tools/
   - **Camera Presets**: `Iso`, `Front`, `Top`, `Right`, plus turntable `Spin`, 10 mm build-plate `Grid`, and `Bounds` envelope cage.
   - **Z-Section Slicer**: Real-time WebGL clipping plane slider (`5%–100%`) to slice vertically through the converted part and confirm internal geometry.
 
-### 2. 3D Mesh Printability Inspector & Unit Scaler (`/api/tools/mesh-inspector`)
+### 2. 3D Mesh Printability Inspector & Unit Scaler (`/tools/mesh-inspector` → `/api/tools/mesh-inspector`)
 - **Manifold & Winding Verification**: Checks watertightness (`is_watertight`), Euler characteristic ($\chi$), and repairs inconsistent face winding normals (`trimesh.repair.fix_winding`).
 - **Metrology & Filament Estimation**: Computes volume ($\text{mm}^3$ and $\text{cm}^3$), surface area, center of mass, and estimated PLA filament weight at 20% infill and 100% solid ($1.24\text{ g/cm}^3$).
 - **Unit Scaling**: One-click scaling between `1:1`, `Inch → mm (×25.4)`, and `mm → Inch (÷25.4)`.
@@ -201,14 +222,14 @@ from .tools import step_to_stl, mesh_inspector, gcode_estimator  # noqa: F401
 ```
 *(If your tool requires a new Python package, add it to `backend/requirements.txt`.)*
 
-### Step 3: Add the Frontend Component in `src/components/` and Push
+### Step 3: Add the Frontend Subpage Route in `src/App.tsx` and Push
 1. Create your React UI component in `src/components/GcodeEstimatorTool.tsx` calling `${backendUrl}/api/tools/gcode-estimator/parse`.
-2. Add its tab to `src/App.tsx`.
-3. Commit and push to `main`:
+2. Add its subpage route (`/tools/gcode-estimator`) in `src/App.tsx`.
+3. Update `README.md` with the new tool details and commit with descriptive notes:
    ```powershell
    git add .
-   git commit -m "Add G-code estimator tool"
-   git push
+   git commit -m "Add G-code estimator tool" -m "Detailed commit notes..."
+   git push origin main
    ```
 Both **Render** (`rileys-tools-backend.onrender.com`) and **Vercel** (`rileydavis.vercel.app`) will automatically build and deploy your new tool.
 
@@ -235,25 +256,16 @@ cd "c:\Users\Riley\Desktop\coding projects\rileys_tools"
 npm install
 npm run dev
 ```
-*(When opened on `localhost`, `getDefaultBackendUrl()` in `src/config.ts` automatically targets `http://localhost:8000`, or you can switch between `http://localhost:8000` and `https://rileys-tools-backend.onrender.com` live in the **All Tools & Render Hub** tab.)*
 
 ---
 
-## Useful Operations & Maintenance Commands
+## Project Changelog & Git Commit Log
 
-```powershell
-# Check Render backend deployment status
-render deploys list srv-dbiku8utlv9c73b131v0 -o json
-
-# Trigger a manual Render deploy
-render deploys create srv-dbiku8utlv9c73b131v0 --confirm -o json
-
-# View recent Render backend logs
-render logs --resources srv-dbiku8utlv9c73b131v0 -o text
-
-# Inspect Vercel deployments
-vercel ls --scope rileydavis
-
-# Deploy directly to Vercel production
-vercel deploy --prod --yes --scope rileydavis
-```
+| Commit | Summary & Notes |
+| :--- | :--- |
+| `2b6d8e6` | **Initial commit: Riley's Tools hub + OpenCASCADE STEP-to-STL converter** — Created monorepo with FastAPI backend (`backend/`), `ToolRegistry`, OpenCASCADE `step_to_stl` router, `mesh_inspector` router, and React + Three.js 3D STL visualizer (`src/`). |
+| `73d6e9c` | **Add OpenCASCADE sample precomputed cache and favicon** — Added `src/samplePrecomputed.ts` and client-side Three.js fallback so the 3D visualizer renders immediately even during Render free-tier cold starts. |
+| `6c249e5` | **Configure clean Vite `vercel.json` and `.vercelignore`** — Excluded `backend/` from Vercel builds so Vercel builds the Vite frontend (`rileydavis.vercel.app`) while Render builds `backend/` (`rileys-tools-backend.onrender.com`). |
+| `f0adccc` | **Document full setup, CLI tooling, architecture, and tool extension guide in `README.md`** — Added architecture diagram, provisioning commands, and developer guide. |
+| `3a70eb3` | **Add clean Home page, Tools directory page, and dedicated tool subpages** — Added History API routing (`/`, `/tools`, `/tools/step-to-stl`, `/tools/mesh-inspector`) and SPA rewrite rules in `vercel.json`. |
+| `8ab31c6` | **Redesign Home page as Riley Davis Software Engineering Portfolio + Live Tool Lab** — Added personal engineer hero, interactive terminal card (`riley@engineering-lab:~`), 4-column Technical Focus & Stack bento grid, Featured Engineering Projects showcase, and global portfolio footer. |
